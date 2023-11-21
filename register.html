@@ -65,32 +65,27 @@
       <div class="login-container">
         <div class="login-box">
           <h2>Registrate</h2>
-          <form>
+          <form id="registerForm">
             <div class="user-box">
-              <input type="text" name="" required="" />
+              <input type="text" name="name" required />
               <label>Nombre De Usuario</label>
             </div>
             <div class="user-box">
-              <input type="email" name="" required="" />
+              <input type="email" name="email" required />
               <label>Correo</label>
             </div>
             <div class="user-box">
-              <input type="password" name="" required="" />
+              <input type="password" name="password" required />
               <label>Contraseña</label>
             </div>
             <div class="user-box">
-              <input type="password" name="" required="" />
+              <input type="password" name="confirmPassword" required />
               <label>Confirmar Contraseña</label>
             </div>
-
-            <a href="#">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              Enviar
-            </a>
+          
+            <button type="submit">Enviar</button>
           </form>
+          
         </div>
       </div>
     </main>
@@ -133,5 +128,49 @@
     </footer>
 
     <script src="vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+      document.getElementById('registerForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+    
+        var name = document.querySelector('[name="name"]').value;
+        var email = document.querySelector('[name="email"]').value;
+        var password = document.querySelector('[name="password"]').value;
+        var confirmPassword = document.querySelector('[name="confirmPassword"]').value;
+    
+        // Verifica que las contraseñas coincidan
+        if (password !== confirmPassword) {
+          alert('Las contraseñas no coinciden.');
+          return;
+        }
+    
+        var data = {
+          name: name,
+          email: email,
+          password: password
+        };
+    
+        fetch('https://royal-flicker-diamond.glitch.me/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => {
+          if (response.ok) {
+            alert('Registro exitoso!');
+          } else if(response.status === 400) {
+            alert('Datos de registro inválidos.');
+          } else {
+            throw new Error('Error en la respuesta del servidor');
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('Error al registrar. Por favor, intenta de nuevo.');
+        });
+      });
+    </script>
+    
   </body>
 </html>

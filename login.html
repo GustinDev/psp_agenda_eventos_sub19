@@ -65,23 +65,16 @@
       <div class="login-container">
         <div class="login-box">
           <h2>Iniciar Sesión</h2>
-          <form>
+          <form id="loginForm">
             <div class="user-box">
-              <input type="text" name="" required="" />
-              <label>Nombre De Usuario</label>
-            </div>
-            <div class="user-box">
-              <input type="email" name="" required="" />
+              <input type="email" name="email" required />
               <label>Correo</label>
             </div>
-
-            <a href="#">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              Enviar
-            </a>
+            <div class="user-box">
+              <input type="password" name="password" required />
+              <label>Contraseña</label>
+            </div>
+            <button type="submit">Enviar</button>
           </form>
         </div>
       </div>
@@ -125,5 +118,39 @@
     </footer>
 
     <script src="vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+      document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+    
+        var email = document.querySelector('[name="email"]').value;
+        var password = document.querySelector('[name="password"]').value;
+    
+        var data = {
+          email: email,
+          password: password
+        };
+    
+        fetch('https://royal-flicker-diamond.glitch.me/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => {
+          if (response.ok) {
+            alert('Login exitoso!');
+          } else if(response.status === 401) {
+            alert('Usuario o contraseña incorrectos.');
+          } else {
+            throw new Error('Error en la respuesta del servidor');
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('Error al iniciar sesión. Por favor, intenta de nuevo.');
+        });
+      });
+    </script>     
   </body>
 </html>
