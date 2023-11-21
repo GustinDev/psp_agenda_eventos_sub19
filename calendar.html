@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+  <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Calendario De Eventos" />
@@ -16,11 +16,31 @@
     <link rel="stylesheet" href="style.css" />
 
     <title>Agenda PSP</title>
-  </head>
 
-  <body class="w-full">
-    <!-- NAVBAR -->
-    <header
+
+  <style>
+    /* Estilos simples para la presentación del calendario */
+    .calendar {
+      font-family: Arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .calendar th, .calendar td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .calendar th {
+      background-color: #f2f2f2;
+    }
+    .add-event-form {
+      margin-bottom: 20px;
+    }
+  </style>
+
+
+</head>
+<header
       class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom px-5"
       style="background-color: #43afee"
     >
@@ -36,8 +56,7 @@
       <ul class="nav nav-pills fs-6 fw-bold">
         <li class="nav-item">
           <a href="index.html" class="nav-link" aria-current="page"
-            ><i class="fas fa-home"></i>
-            <span class="text-white">Inicio</span></a
+            ><i class="fas fa-home"></i> Inicio</a
           >
         </li>
         <li class="nav-item">
@@ -60,16 +79,82 @@
         </li>
       </ul>
     </header>
-    <!-- BODY -->
-    <main>
-      <div class="login-container">
-        <div class="login-box">
-          <h2>Calendario</h2>
-        </div>
-      </div>
-    </main>
-    <!-- FOOTER -->
-    <footer
+<body>
+
+<div class="add-event-form">
+  <label for="eventDate">Fecha:</label>
+  <input type="date" id="eventDate">
+  <label for="eventDescription">Descripción:</label>
+  <input type="text" id="eventDescription">
+  <button onclick="addEvent()">Agregar Evento</button>
+</div>
+
+<table class="calendar">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Evento</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="eventList">
+    <!-- Aquí se mostrarán los eventos -->
+  </tbody>
+</table>
+
+<script>
+  // Función para agregar un nuevo evento al calendario
+  function addEvent() {
+    const eventDate = document.getElementById('eventDate').value;
+    const eventDescription = document.getElementById('eventDescription').value;
+
+    if (eventDate && eventDescription) {
+      const eventItem = {
+        date: eventDate,
+        description: eventDescription
+      };
+
+      let events = JSON.parse(localStorage.getItem('events')) || [];
+      events.push(eventItem);
+      localStorage.setItem('events', JSON.stringify(events));
+
+      renderEvents();
+    }
+  }
+
+  // Función para eliminar un evento del calendario
+  function deleteEvent(index) {
+    let events = JSON.parse(localStorage.getItem('events')) || [];
+    events.splice(index, 1);
+    localStorage.setItem('events', JSON.stringify(events));
+
+    renderEvents();
+  }
+
+  // Función para mostrar los eventos en la tabla
+  function renderEvents() {
+    const eventList = document.getElementById('eventList');
+    eventList.innerHTML = '';
+
+    let events = JSON.parse(localStorage.getItem('events')) || [];
+
+    events.forEach((event, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${event.date}</td>
+        <td>${event.description}</td>
+        <td><button onclick="deleteEvent(${index})">Eliminar</button></td>
+      `;
+      eventList.appendChild(row);
+    });
+  }
+
+  // Mostrar eventos al cargar la página
+  renderEvents();
+</script>
+
+</body>
+<footer
       class="row py-4 d-flex justify-content-between text-dark mt-5 px-5 fs-5 text-white"
       style="background-color: #43afee; width: 100.5%"
     >
@@ -108,4 +193,6 @@
 
     <script src="vendors/bootstrap/js/bootstrap.min.js"></script>
   </body>
+</html>
+
 </html>
